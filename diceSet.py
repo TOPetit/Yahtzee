@@ -20,6 +20,12 @@ class DiceSet:
     def getValue(self) -> List[int]:
         return list(map(lambda obj: obj.getValue(), self.dices))
 
+    def sumValue(self) -> int:
+        n = 0
+        for dice in self.dices:
+            n += dice.getValue()
+        return n
+
     # TEST METHOD - use carefully
     def setValue(self, values: List[int]) -> None:
         for i in range(self.nbDices):

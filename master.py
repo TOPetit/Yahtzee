@@ -8,12 +8,12 @@ class Master:
         pass
 
     def evaluate(self, diceSet: DiceSet) -> int:
-        self.ones(diceSet)
-        self.twos(diceSet)
-        self.threes(diceSet)
-        self.fours(diceSet)
-        self.fives(diceSet)
-        self.sixes(diceSet)
+        self.digits(diceSet, 1)
+        self.digits(diceSet, 2)
+        self.digits(diceSet, 3)
+        self.digits(diceSet, 4)
+        self.digits(diceSet, 5)
+        self.digits(diceSet, 6)
         self.threeOfAKind(diceSet)
         self.fourOfAKind(diceSet)
         self.yahtzee(diceSet)
@@ -22,38 +22,31 @@ class Master:
         self.largeStraight(diceSet)
         self.chance(diceSet)
 
-    def ones(self, diceSet: DiceSet) -> None:
-        print("ones   : {:d}".format(diceSet.getValue().count(1)))
-
-    def twos(self, diceSet: DiceSet) -> None:
-        print("twos   : {:d}".format(diceSet.getValue().count(2)))
-
-    def threes(self, diceSet: DiceSet) -> None:
-        print("threes : {:d}".format(diceSet.getValue().count(3)))
-
-    def fours(self, diceSet: DiceSet) -> None:
-        print("fours  : {:d}".format(diceSet.getValue().count(4)))
-
-    def fives(self, diceSet: DiceSet) -> None:
-        print("fives  : {:d}".format(diceSet.getValue().count(5)))
-
-    def sixes(self, diceSet: DiceSet) -> None:
-        print("sixes  : {:d}".format(diceSet.getValue().count(6)))
+    def digits(self, diceSet: DiceSet, digit: int) -> int:
+        raw = diceSet.getValue().count(digit)
+        points = digit * raw
+        print("[{:02d}] - {:d}  : {:d}".format(points, digit, raw))
+        return points
 
     def threeOfAKind(self, diceSet: DiceSet) -> None:
+        points = diceSet.sumValue()
         for i in range(faces):
             if diceSet.getValue().count(i+1) == 3:
-                print("three of a kind : {:d}".format(i+1))
+                print("[{:02d}] - Three of a kind : {:d}".format(points, i+1))
+        return points
 
     def fourOfAKind(self, diceSet: DiceSet) -> None:
+        points = diceSet.sumValue()
         for i in range(faces):
             if diceSet.getValue().count(i+1) == 4:
-                print("four of a kind : {:d}".format(i+1))
+                print("[{:02d}] - four of a kind : {:d}".format(points, i+1))
+        return points
     
     def yahtzee(self, diceSet: DiceSet) -> None:
         for i in range(faces):
             if diceSet.getValue().count(i+1) == 5:
-                print("yahtzee : {:d}".format(i+1))
+                print("[50] - Yahtzee : {:d}".format(i+1))
+        return 50
     
     def full(self, diceSet: DiceSet) -> None:
         value = 0
@@ -62,24 +55,26 @@ class Master:
                 value = i + 1
                 for j in range(faces):
                     if diceSet.getValue().count(j+1) == 2:
-                        print("full house : {:d} (x3)  {:d} (x2)".format(value, j+1))
+                        print("[25] - Full house : {:d} (x3)  {:d} (x2)".format(value, j+1))
+        return 25
 
     def smallStraight(self, diceSet: DiceSet) -> None:
         which = [False] * faces
         for i in range(diceSet.nbDices):
             which[diceSet.dices[i].getValue() - 1] = True
         if [True] * (diceSet.nbDices - 1) in [which[: -2], which[1: -1], which[2:]]:
-            print("small straight")
+            print("[30] - Small straight")
+        return 30
 
     def largeStraight(self, diceSet: DiceSet) -> None:
         which = [False] * faces
         for i in range(diceSet.nbDices):
             which[diceSet.dices[i].getValue() - 1] = True
         if [True] * (diceSet.nbDices) in [which[: -1], which[1:]]:
-            print("large straight")
+            print("[40] - Large straight")
+        return 40
 
     def chance(self, diceSet: DiceSet) -> None:
-        n = 0
-        for dice in diceSet.dices:
-            n += dice.getValue()
-        print("Chance : {:d}".format(n))
+        points = diceSet.sumValue()
+        print("[{:02d}] - Chance".format(points))
+        return points
