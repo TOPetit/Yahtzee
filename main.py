@@ -1,3 +1,4 @@
+from search import Search
 from combinations import Combinations
 from diceSet import DiceSet
 from master import Master
